@@ -12,6 +12,7 @@
    Credits
    Dataset: Yi Yang and Shawn Newsam, "Bag-Of-Visual-Words and Spatial Extensions for Land-Use Classification," ACM SIGSPATIAL International Conference on Advances in Geographic Information Systems (ACM GIS), 2010.
 
+link: https://www.kaggle.com/apollo2506/landuse-scene-classification
 
 ## II. Objective 
 - Build CNN model from casual to complex have accuracy over 95% and loss under 0.1.
