@@ -1,4 +1,4 @@
-# Use CNN Model predict image from sattellite
+# Use CNN Model predict image from satellite
 
 ## I. Dataset
    - 21 Class
