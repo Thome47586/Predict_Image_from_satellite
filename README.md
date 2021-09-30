@@ -1,11 +1,13 @@
 # Use CNN Model predict image from sattellite
 
 ## I. Dataset
-### Context
-   The main aim of this project is the masking of regions where land is being used in satellite images obtained through Landsat which have a low spatial resolution.
+   - 21 Class
+   - 500 images in single class
+   - Used augmentation
+   - Size 256 x 256
+   <img width="753" alt="Screen Shot 2021-09-30 at 13 44 23" src="https://user-images.githubusercontent.com/86963378/135401176-686a2b42-dcf9-4164-8a0d-823467303d43.png">
 
-### Content
-   This dataset contains satellite images of 21 classes such as buildings, baseball fields, freeways, etc. The original size of the images is 256x256 pixels. Originally there were 100 images per class. After augmenting each image 4 times the size of each class was brought up to 500 images. This allows for making a more robust model.
+
 
 ### Acknowledgements
    The above dataset was obtained from the UC Merced Dataset
@@ -20,56 +22,101 @@ link: https://www.kaggle.com/apollo2506/landuse-scene-classification
 - Understand reasons model predict false.
 
 ## III. Main content
-### 1. Explore data
-- Dataset have 21 class about how land is being used, whole images collect from satellite iobtained through Landsat which have a low spatial resolution and been done augmentation.
-- With 500 images from single class, totally 21 class is 10.500 image, It's a great resource to build strong model and enough to split train, validation, test set
-
-### 2. Build model
-  #### **a. Configure image Data Generator**
-  We need to prepare data set before training, from image diratory split train, validation, test set and scale data.
-  Result:
+  ### 1. Configure image Data Generator**
+  - Batch_size = 32
   - Train set: 70%
   - Validation set: 20%
   - Test set: 10%
 
-  #### **b. Try to build model**
-  In this lab, I trial and error from simple to complex Models to build myself. During which layers used: Dense, Max pooling to keep highlight elements
-  As a result, the accuracy increases but an overfit signal appears, I limit the overfit by using dropout to randomly set some activations to 0. But this situation is not feasible I combine more regularizers l2
-  and to reduce the loss I use to reduce the Learning rate
+### 2. Build model
 
-  As mentioned above, I trial and error, using knowledge I have learned to apply in practice to see how effective they are and what is different.
-  To make it easier for you to imagine, I have omitted the code.
+#### **a. Build model**
+  <img width="328" alt="Screen Shot 2021-09-30 at 13 49 27" src="https://user-images.githubusercontent.com/86963378/135402041-018a6e47-a1e8-4888-96c1-6f69e1d1338c.png">
+  
+  - Accuracy on validation set: 80%
+  - Loss of validation: 0.7
+  - Quantitative epochs trained: 60 
+  - Technique used:
+      - Dropout
+      - Max_pooling
+      - Conv2D
+      - Regukarizers L2
+      - Reduce learning rate on plateau
 
-  After trained, I have some conclusions as follows:
-  - Low-resolution satellite images make it difficult to train models
-  - The model's built me, weights are retrained from the beginning, so it takes a long time in the fine-tuning get objective
+#### **b. VGG16**
+ <img width="328" alt="Screen Shot 2021-09-30 at 14 01 43" src="https://user-images.githubusercontent.com/86963378/135403385-9ff9861d-8b40-4cc0-92f1-b92bb2f521d9.png">
+ 
+- Accuracy on validation set: 88%
+- Loss of validation: 0.36
+- Quantitative epochs trained: 55 
+- Technique layers used:
+   - Reduce learning rate on plateau
+   - Steps_pre_epoch
+   - Early stop
+ 
+ #### **c. Transfer learning Xception**
+  <img width="328" alt="Screen Shot 2021-09-30 at 14 04 46" src="https://user-images.githubusercontent.com/86963378/135403745-4529f397-0110-4e3d-a25e-a824f1b29385.png">
 
-  After testing and reading the document, I decided to switch to transfer learning VGG16 
+- Accuracy on validation set: 98,7%
+- Loss of validation: 0.043
+- Quantitative epochs trained: 57 
+- Technique layers used:
+   - Fine tune 32 layers in Xception
+   - Tuning learning rate in optimizer
+   - Reduce learning rate on plateau
+- **Accuracy evaluated on test set: 98,57%**
+- **Loss evaluated on test set: 0.0442**
 
-  #### **c. Transfer learning VGG16**
-  With Model VGG16 I trained more than 55 epochs, fine-tune many times and achieving acc 88% and loss 0.36. 
-  During this time I noticed another model smaller than VGG16 and more efficient, this is Xception. 
+```
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_2 (InputLayer)         [(None, 299, 299, 3)]     0         
+_________________________________________________________________
+tf.math.truediv (TFOpLambda) (None, 299, 299, 3)       0         
+_________________________________________________________________
+tf.math.subtract (TFOpLambda (None, 299, 299, 3)       0         
+_________________________________________________________________
+xception (Functional)        (None, 10, 10, 2048)      20861480  
+_________________________________________________________________
+global_average_pooling2d (Gl (None, 2048)              0         
+_________________________________________________________________
+dropout (Dropout)            (None, 2048)              0         
+_________________________________________________________________
+dense (Dense)                (None, 21)                43029     
+=================================================================
+Total params: 20,904,509
+Trainable params: 9,521,373
+Non-trainable params: 11,383,136
+_________________________________________________________________
+```
 
-  While I couldn't think of a way to improve VGG16 yet, I try to Xception
+#### **d. Error Analysis**
 
-  #### **d. Transfer learning Xception**
-  Over expectedly, in the first 40 epochs, the accuracy increased to 96% and the loss decreased to 0.1. I'm really happy with a positive response from Xception.
-  Nextstep,  I opened 32 layers to fine-tune, add the callbacks I wanted and continue to train more 15 epochs, model get over 98% and loss dropped to 0.046.
+<img width="600" alt="Screen Shot 2021-09-30 at 14 14 48" src="https://user-images.githubusercontent.com/86963378/135405126-dbbd3457-f747-4e47-97f7-e1267c2e3beb.png">
 
-  This is a great result during training.
+Show some case don't clear to predict wrong or confuse
 
-  All these results are evaluated on the training and validation set. To ensure we need to evaluate it on test set hidden before and results are absolutely amazing, it's same as on the validation set.
+<img width="142" alt="Screen Shot 2021-09-30 at 14 17 26" src="https://user-images.githubusercontent.com/86963378/135405470-76944981-5647-4030-b81a-abf7fb687086.png">
 
-  To evaluate it more objectively, I represented it with a classification report where the classes were been predicted incorrectly very clear. 
-  But it's difficult to understand why it's wrong, so let's move error analysis 
+Model predict golfcourse
 
-  #### **e. Error Analysis**
+<img width="600" alt="Screen Shot 2021-09-30 at 14 19 41" src="https://user-images.githubusercontent.com/86963378/135405798-46b891fe-ff6c-408d-a23c-55a2b581f17c.png">
 
-  In Error Analysis I will display which class model high confidence low confidence and wrong label.
-  In this section, we focus on image predicted wrong by model and find out solution
+Confuse to predict
 
-  #### **f. Predict real image**
 
-  In the objective above, I collected images from Google map and test on model.
-  With high accuracy and low loss, model predicts exactly even image low spatial resolution than dataset
+  
+#### **e. Predict real image**
+Predict actually images
+
+Harbor in Vung Tau beach
+
+<img width="382" alt="Screen Shot 2021-09-30 at 00 09 17" src="https://user-images.githubusercontent.com/86963378/135406131-e47965c1-47ff-492f-849f-c45819aa6dc3.png">
+
+Tan Son Nhat airport
+
+<img width="382" alt="Screen Shot 2021-09-29 at 14 53 07" src="https://user-images.githubusercontent.com/86963378/135406159-ed1a6014-e6ab-4bb1-8ea3-d426985162ad.png">
+
+
 
