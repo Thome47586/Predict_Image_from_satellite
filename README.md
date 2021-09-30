@@ -22,7 +22,7 @@ link: https://www.kaggle.com/apollo2506/landuse-scene-classification
 - Understand reasons model predict false.
 
 ## III. Main content
-  ### 1. Configure image Data Generator**
+  ### 1. Configure image Data Generator
   - Batch_size = 32
   - Train set: 70%
   - Validation set: 20%
