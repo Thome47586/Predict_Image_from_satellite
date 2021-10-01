@@ -97,7 +97,7 @@ _________________________________________________________________
 
 Show some case don't clear to predict wrong or confuse
 
-<img width="142" alt="Screen Shot 2021-09-30 at 14 17 26" src="https://user-images.githubusercontent.com/86963378/135405470-76944981-5647-4030-b81a-abf7fb687086.png">
+<img width="382" alt="Screen Shot 2021-09-30 at 14 17 26" src="https://user-images.githubusercontent.com/86963378/135405470-76944981-5647-4030-b81a-abf7fb687086.png">
 
 Model predict golfcourse
 
